@@ -12,12 +12,10 @@ services:
       - 443:443
     restart: unless-stopped
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./conf.d:/etc/nginx/conf.d
-      - ./certs:/etc/nginx/ssl            # Self-signed certificates
-    # - /etc/letsencrypt:/etc/nginx/ssl   # For use with cerbot, certs at /etc/nginx/ssl/live/<domain>
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/ssl
 
 networks:
   reverse-proxy:
     name: reverse-proxy
-    external: true
