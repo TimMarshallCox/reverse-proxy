@@ -1,3 +1,6 @@
 conf.d/*
 !conf.d/default.conf
 !conf.d/template
+
+certs/fullchain.pem
+certs/privkey.pem
