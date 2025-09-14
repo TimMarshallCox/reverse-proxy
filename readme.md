@@ -43,3 +43,14 @@ The `default_type` directive sets the default content type for responses that do
 The `server_tokens` directive controls whether or not the version of Nginx is included in the `Server` response header. For production environments, this should be set to `off` to prevent disclosure of unnecessary information.
 
 The `keepalive_timeout` directive controls how many seconds Nginx will keep the connection alive to reduce the overhead that would be required for a client to renegotiate a connection. The second value sets the `Keep-Alive` response header. It is recommended to set the second value a few seconds lower than the first value to account for potential latency between the client and the server.
+
+### `conf.d/default.conf`
+The `listen <port> default_server` section informs Nginx that if no other server is matched on the given port, then this server should be used. This behaviour is used to define default behaviours on ports 80 and 443.
+
+The default behaviour on port 80 is to redirect the request to HTTPS. If alternative behaviour is desired, this can be defined in a separate configuration file.
+
+The default behaviour on port 443 is to return HTTP code 444. This is an unofficial code specific to Nginx. It closes the connection without a reason. We can't only accept requests to known hostnames, because we must first accept to request to discover which hostname it is for. If a request comes in for an unknown hostname then the connection is terminated as soon as this is established.
+
+The only exception to this behaviour on port 443 is for the `/status` location. If this is requested, an HTTP code of 200 will be returned. This is to be used for server and network health checks. It simply indicates whether or not Nginx is online and responding to requests. Application-specific health checks should be built into the configuration file for a given application.
+
+Sane defaults for SSL configuration options can be generated [here](https://ssl-config.mozilla.org/). HSTS and OCSP Stapling should only be used with valid certificates. HSTS sets a header which tells the client to reject the connection if an invalid certificate is presented. OCSP Stapling allows the server to present the CA certificates alongside the main certificate to prevent the client from having to look up the CA certificate themselves. For Certbot, this is the `live/<domain>/chain.pem` certificate file.
